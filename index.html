@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Do List PWA</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4CAF50">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Vista de Inicio de Sesión -->
+    <div id="loginCard" class="card">
+      <h2>To Do List</h2>
+      <p class="subtitle">Ingresa para ver y sincronizar tus tareas.</p>
+      
+      <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        <button type="submit" class="btn-primary">Iniciar sesión</button>
+      </form>
+      
+      <hr>
+      <button id="showRegisterBtn" class="btn-secondary">Crear cuenta nueva</button>
+      <p id="loginError" class="error-msg"></p>
+    </div>
+
+    <!-- Vista de Registro -->
+    <div id="registerCard" class="card" style="display: none;">
+      <h2>Crear Cuenta</h2>
+      <p class="subtitle">Regístrate para guardar tus tareas.</p>
+      
+      <form id="registerForm">
+        <input type="text" id="regName" placeholder="Nombre completo" required>
+        <input type="email" id="regEmail" placeholder="Correo electrónico" required>
+        <input type="password" id="regPassword" placeholder="Contraseña (mínimo 6 caracteres)" required>
+        <button type="submit" class="btn-primary">Registrarse</button>
+      </form>
+      
+      <hr>
+      <button id="showLoginBtn" class="btn-secondary">Ya tengo cuenta</button>
+      <p id="registerError" class="error-msg"></p>
+    </div>
+
+    <!-- Vista Principal de Tareas -->
+    <div id="appContainer" class="card" style="display: none;">
+      <div class="header">
+        <h3>Bienvenido, <span id="userDisplay"></span></h3>
+        <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="taskInput" placeholder="Escribe una tarea...">
+        <button id="addBtn" class="btn-add">Agregar</button>
+      </div>
+
+      <ul id="taskList"></ul>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
