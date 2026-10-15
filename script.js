@@ -270,15 +270,14 @@ function listenToUserTasks(uid) {
 
     docs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
-    if (docs.length > 0) {
-      localStorage.setItem('pwa_cached_tasks', JSON.stringify(docs));
-      taskList.innerHTML = '';
-      docs.forEach((item) => {
-        createTaskElement(item.text, item.id);
-      });
-    } else {
-      renderCachedTasks();
-    }
+    // Guardar copia local exacta (vacía [] o con tareas)
+    localStorage.setItem('pwa_cached_tasks', JSON.stringify(docs));
+
+    // Limpieza forzada del DOM y renderizado
+    taskList.innerHTML = '';
+    docs.forEach((item) => {
+      createTaskElement(item.text, item.id);
+    });
   }, (error) => {
     console.error("Error en Snapshot:", error);
     renderCachedTasks();
@@ -286,8 +285,6 @@ function listenToUserTasks(uid) {
 }
 
 function createTaskElement(text, id) {
-  if (document.getElementById(`task-${id}`)) return;
-
   const li = document.createElement('li');
   li.id = `task-${id}`;
   
@@ -298,32 +295,25 @@ function createTaskElement(text, id) {
   deleteBtn.textContent = 'X';
   deleteBtn.classList.add('delete-btn');
   deleteBtn.addEventListener('click', async () => {
-    // 1. Eliminar de la pantalla
+    // Eliminar visualmente del DOM de inmediato
     li.remove();
 
-    // 2. Actualizar localStorage inmediatamente
+    // Actualizar localStorage quitando esta tarea
     const localTasks = JSON.parse(localStorage.getItem('pwa_cached_tasks') || '[]');
     const updatedTasks = localTasks.filter(item => item.id !== id);
     localStorage.setItem('pwa_cached_tasks', JSON.stringify(updatedTasks));
 
-    // 3. Eliminar de Firestore
+    // Eliminar de Firestore si no es un ID temporal
     try {
       if (!id.startsWith('temp_')) {
         await deleteDoc(doc(db, "tareas", id));
       }
     } catch (e) {
-      console.log("Eliminado en local");
+      console.log("Eliminado en modo offline");
     }
   });
 
   li.appendChild(span);
   li.appendChild(deleteBtn);
   taskList.appendChild(li);
-}
-
-// Registro del Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.error(err));
-  });
 }
